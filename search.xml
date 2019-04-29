@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[javatcp示例]]></title>
+    <url>%2Flanxi.github.io%2F2019%2F04%2F29%2Fjavatcp%E7%A4%BA%E4%BE%8B%2F</url>
+    <content type="text"><![CDATA[示例思路 程序分为两个进程和服务器端进程，若要实现通信功能，则需要借助Socket来实现 补充：如果要根据不同的客户端返回不同的信息，可以利用InetAddress类，来获取相应连接的主机或名字的信息，先运行服务器，后运行客户端环境：eclipse+jdk11 程序代码服务器端代码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647 public class tcpserver &#123; public static void main(String[] args) &#123; ServerSocket ss = null; OutputStream os = null; InputStream is = null; Socket sclient = null; byte[] buff = null; int len; buff = new byte[1024]; String info; String cinfo; try &#123; ss = new ServerSocket(6000); System.out.println(&quot;等待客户端连接。。。。。&quot;); sclient = ss.accept(); System.out.println(&quot;客户端已连接，来自&quot;+InetAddress.getLocalHost()); is = sclient.getInputStream(); len = is.read(buff); info = new String(buff,0,len); System.out.println(&quot;这是来自客户端的信息:&quot;+info); os = sclient.getOutputStream(); cinfo = &quot;hello &quot;+InetAddress.getLocalHost()+&quot; i am server.&quot;; os.write(cinfo.getBytes()); os.flush(); Thread.sleep(30); is.close(); os.close(); sclient.close(); ss.close(); &#125; catch (IOException e) &#123; e.printStackTrace(); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125; &#125;&#125; 客户端代码：12345678910111213141516171819202122232425262728293031323334353637383940 public class tcpclient &#123; public static void main(String[] args) &#123; InputStream is = null; OutputStream os = null; Socket clientsocket = null; byte[] buff = null; int len ; String info = &quot;hello i am client!!!!!&quot;; try &#123; //准备连接服务器 System.out.println(&quot;准备连接服务器。。。。&quot;); clientsocket = new Socket(&quot;127.0.0.1&quot;,6000); System.out.println(&quot;准备向服务器发送数据。。。。&quot;); os = clientsocket.getOutputStream();//发送数据 os.write(info.getBytes()); os.flush(); //接收数据 System.out.println(&quot;准备接收服务器数据......&quot;); buff = new byte[1024]; is = clientsocket.getInputStream(); len = is.read(buff); String reinfo = new String(buff,0,len); System.out.println(&quot;这是来自服务器的信息：&quot;+reinfo); os.close(); is.close(); clientsocket.close(); System.out.println(&quot;bye&quot;); &#125; catch (UnknownHostException e) &#123; e.printStackTrace(); &#125; catch (IOException e) &#123; e.printStackTrace(); &#125; &#125;&#125;]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Matlab学习笔记--入门（一）]]></title>
+    <url>%2Flanxi.github.io%2F2019%2F04%2F28%2FMatlab%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[matlab入门 数据和变量 数组和运算 字符串 元胞和结构 在指令窗口可以做一些简单的计算 数据和变量表达式 几个表达式之间可以用分号或者逗号连接，分号连接不显示运算的结果。 在运算式子结束的时候可用空格+…之后回车在下一行继续书写 %后面写注释 数据显示格式默认数据显示格式为short 整数———整数 实数———小数点后4位 有效数字超出范围————科学计数法 可以利用format进行格式化 格式为： format + 需格式化的类型 ； 变量 复数复数可以直接输入进行计算 示例 a = 1 + 2 * i; 问题：-8开三次根出现一个复数，如何解决？ 预定义变量 i和j，是虚数单位 pi 为圆周率 eps 为浮点识别精度 realmin 为最小正实数，小于其为0 realmax 为最大正实数，大于其为无穷 Inf 为无穷大 NaN 为没有意义的数 可以对其重新赋值，同时clear后初始化 用户变量 whos 查看当前workspace的所有变量 clear 清除所有变量或者指定某一个变量 ans为没有指定变量名的变量 数据MAT文件 使用 load + 文件名来读取相应的文件，mat文件为二进制文件 数组及其运算数组的输入和分析 matlab 中的数组是按列来计算的 数组示例 a = [1,2,3;4,5,6;7,8,9] 等价于 a = [1 2 3 4 5 6 7 8 9] 可以使用等差数列构造一维数组 xxx = 初值：增量：终值 length（）用于查询一维数组的长度 size（）用于查询多维数组的大小 a（：）用于把数组中的数据按顺序，列出为列项量 a（[x,y] [x, y]）提取出xy行，xy列的数组，返回一个新的数组 a（2，：）提取a的整个第二行 a [x;y]将两个数组拼接 sum（a）一维数组直接求和，二维数组按列求和 数组运算 数组的加减A+B/A-B 数组乘A.*B 数组乘方A.^B 数组除法A./B OR A.\B 数学函数 常规数学函数 sin / cos / tan / cot / asin / acos / sqrt / exp / log / floor(向下取整) / ceil（向上取整） / abs（绝对值） / factorial（阶乘） / 关系和逻辑运算真用1，假用0来表示，其余规则与c和java一致，非用~来表示 字符串，元胞和结构字符串 字符串直接用单引号包围 size()用来求字符串长度 eval()可以执行字符串中的计算式 字符串可以用ascll码换算 拼接字符串示例 [a,’.’,b,’.’] 字符串和数字之间可以用来转换 num2str str2num 元胞和结构 字符串可以通过char（）来转化为字符数组，会自动补齐 不同类型，尺寸的数组通过加大括号来表示为一个元胞，多个元胞形成数组 示例ac1={‘first’;1:3} ac2={‘second’;[1 2;3 4]} ac=[ac1,ac2] ac = ‘first’ ‘second’ [1*3 double] [2*2 double] ac()查询元素 ac[]查询元素具体内容 结构通过域来定义，这里可以理解为结构体的概念，几个结构可以合成一个结构数组然后域名一致示例省略，很重要 元胞数组和结构数组之间的转换 struct2cell cell2struct]]></content>
+      <categories>
+        <category>MATLAB</category>
+      </categories>
+      <tags>
+        <tag>matlab</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[MD使用介绍]]></title>
     <url>%2Flanxi.github.io%2F2019%2F04%2F26%2FMD%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D%2F</url>
     <content type="text"><![CDATA[主要特点 自动生成目录 代码块高亮 引用展示 表格插入 图片插入 强调显示 列表显示 自动URL链接 语法标题主要用#来表示标题的等级，从一个开始到六个，继续加多没有格式，只会生成目录，可以闭合 列表无序列表 a b c 用+号在前面来表示，注意需要有一个空格，后面也是 有序列表 ada sad asd 用数字加英文’.’来表示，有序列表和无序列表可以进行嵌套，嵌套用tab来缩进 eg： sad 5446 564 5464 无序同理 引用MD中使用 &gt; 来进行引用 示例： asddaaasda asdad sadas asd Asdasd asdasd 代码块 少量代码，单行使用，直接用`包裹起来就行了 大量代码，需要多行使用，用`包裹起来 连接 行内式 链接的文字放在[]中，链接地址放在随后的()中，链接也可以带title属性，链接地址后面空一格，然后用引号引起来 用[文字]和(地址或地址加上title)来表示 简书,是一个创作社区,任何人均可以在其上进行创作。用户在简书上面可以方便的创作自己的作品,互相交流。 图片和链接的形式差不多，图片的名字放在[]中，图片地址放在随后的()中，title属性（图片地址后面空一格，然后用引号引起来）,注意的是[]前要加上! 分割线分割线可以由* - _（星号，减号，底线）这3个符号的至少3个符号表示，注意至少要3个，且不需要连续，有空格也可以 示例： 表格表格使用 表格的格式不一定要对的非常起，但是为了良好的变成风格，尽量对齐是最好的 分割线后面的冒号表示对齐方式，写在左边表示左对齐，右边为右对齐，两边都写表示居中 用 || 来表示,也就是说两条竖杠等于表格的格子线，就不举例了 其他 一个星号或者是一个下划线包起来，会转换为倾斜，如果是2个，会转换为加粗内容\ or_内容_等等 转义字符用\表示 删除线用内容来表示 提醒自己，千万要加空格在格式和文字之间！！！！！！ 以上就基本的MD语法的简单介绍]]></content>

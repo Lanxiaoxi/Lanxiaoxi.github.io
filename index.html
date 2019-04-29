@@ -391,6 +391,510 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lanxiaoxi.github.io/lanxi.github.io/lanxi.github.io/2019/04/29/javatcp示例/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chu Zhihang">
+      <meta itemprop="description" content="A normal man.">
+      <meta itemprop="image" content="/lanxi.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lanxiaoxi's-blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/lanxi.github.io/2019/04/29/javatcp示例/" class="post-title-link" itemprop="url">javatcp示例</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-29 16:07:31 / 修改时间：16:15:11" itemprop="dateCreated datePublished" datetime="2019-04-29T16:07:31+08:00">2019-04-29</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/lanxi.github.io/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/lanxi.github.io/2019/04/29/javatcp示例/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/lanxi.github.io/2019/04/29/javatcp示例/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="示例思路"><a href="#示例思路" class="headerlink" title="示例思路"></a>示例思路</h1><ul>
+<li><p>程序分为两个进程和服务器端进程，若要实现通信功能，则需要借助Socket来实现</p>
+</li>
+<li><p>补充：如果要根据不同的客户端返回不同的信息，可以利用InetAddress类，来获取相应连接的主机或名字的信息，先运行服务器，后运行客户端<br>环境：eclipse+jdk11</p>
+</li>
+</ul>
+<h1 id="程序代码"><a href="#程序代码" class="headerlink" title="程序代码"></a>程序代码</h1><h2 id="服务器端代码："><a href="#服务器端代码：" class="headerlink" title="服务器端代码："></a>服务器端代码：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">		</span><br><span class="line">        public class tcpserver &#123;</span><br><span class="line">	    public static void main(String[] args) &#123;</span><br><span class="line">		ServerSocket ss = null;</span><br><span class="line">		OutputStream os = null;</span><br><span class="line">		InputStream is = null;</span><br><span class="line">		Socket sclient = null;</span><br><span class="line">		byte[] buff = null;</span><br><span class="line">		int len;</span><br><span class="line">        buff = new byte[1024];</span><br><span class="line">		String info;</span><br><span class="line">		String cinfo;</span><br><span class="line">		try &#123;</span><br><span class="line">			ss = new ServerSocket(6000);</span><br><span class="line">			System.out.println(&quot;等待客户端连接。。。。。&quot;);</span><br><span class="line">			sclient = ss.accept();</span><br><span class="line">			System.out.println(&quot;客户端已连接，来自&quot;+InetAddress.getLocalHost());</span><br><span class="line">			is = sclient.getInputStream();</span><br><span class="line">			len = is.read(buff);</span><br><span class="line">			info = new String(buff,0,len);</span><br><span class="line">			System.out.println(&quot;这是来自客户端的信息:&quot;+info);</span><br><span class="line"></span><br><span class="line">			os = sclient.getOutputStream();</span><br><span class="line">			cinfo = &quot;hello &quot;+InetAddress.getLocalHost()+&quot; i am server.&quot;;</span><br><span class="line">			os.write(cinfo.getBytes());</span><br><span class="line">			os.flush();</span><br><span class="line">			</span><br><span class="line">			Thread.sleep(30);</span><br><span class="line">			is.close();</span><br><span class="line">			os.close();</span><br><span class="line">			sclient.close();</span><br><span class="line">			ss.close();</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (InterruptedException e) &#123;</span><br><span class="line">			</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="客户端代码："><a href="#客户端代码：" class="headerlink" title="客户端代码："></a>客户端代码：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">		</span><br><span class="line">		public class tcpclient &#123;</span><br><span class="line">	    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">		InputStream is = null;</span><br><span class="line">		OutputStream os = null;</span><br><span class="line">		Socket clientsocket = null;</span><br><span class="line">		byte[] buff = null;</span><br><span class="line">		int len ;</span><br><span class="line">		String info = &quot;hello i am client!!!!!&quot;;</span><br><span class="line">		try &#123;</span><br><span class="line">	//准备连接服务器</span><br><span class="line">			System.out.println(&quot;准备连接服务器。。。。&quot;);</span><br><span class="line">			clientsocket = new Socket(&quot;127.0.0.1&quot;,6000);</span><br><span class="line">			System.out.println(&quot;准备向服务器发送数据。。。。&quot;);</span><br><span class="line">			os = clientsocket.getOutputStream();//发送数据</span><br><span class="line">			os.write(info.getBytes());</span><br><span class="line">			os.flush();</span><br><span class="line">	//接收数据</span><br><span class="line">			System.out.println(&quot;准备接收服务器数据......&quot;);</span><br><span class="line">			buff = new byte[1024];</span><br><span class="line">			is = clientsocket.getInputStream();</span><br><span class="line">			len = is.read(buff);</span><br><span class="line">			String reinfo = new String(buff,0,len);</span><br><span class="line">			</span><br><span class="line">			System.out.println(&quot;这是来自服务器的信息：&quot;+reinfo);</span><br><span class="line">			</span><br><span class="line">			os.close();</span><br><span class="line">			is.close();</span><br><span class="line">			clientsocket.close();</span><br><span class="line">			System.out.println(&quot;bye&quot;);</span><br><span class="line">			</span><br><span class="line">		&#125; catch (UnknownHostException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lanxiaoxi.github.io/lanxi.github.io/lanxi.github.io/2019/04/28/Matlab学习笔记（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chu Zhihang">
+      <meta itemprop="description" content="A normal man.">
+      <meta itemprop="image" content="/lanxi.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lanxiaoxi's-blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/lanxi.github.io/2019/04/28/Matlab学习笔记（一）/" class="post-title-link" itemprop="url">Matlab学习笔记--入门（一）</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-28 18:48:41" itemprop="dateCreated datePublished" datetime="2019-04-28T18:48:41+08:00">2019-04-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-29 17:06:37" itemprop="dateModified" datetime="2019-04-29T17:06:37+08:00">2019-04-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/lanxi.github.io/categories/MATLAB/" itemprop="url" rel="index"><span itemprop="name">MATLAB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/lanxi.github.io/2019/04/28/Matlab学习笔记（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/lanxi.github.io/2019/04/28/Matlab学习笔记（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="matlab入门"><a href="#matlab入门" class="headerlink" title="matlab入门"></a>matlab入门</h1><ul>
+<li>数据和变量</li>
+<li>数组和运算</li>
+<li>字符串</li>
+<li>元胞和结构</li>
+</ul>
+<p>在指令窗口可以做一些简单的计算</p>
+<h2 id="数据和变量"><a href="#数据和变量" class="headerlink" title="数据和变量"></a>数据和变量</h2><h3 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h3><ol>
+<li>几个表达式之间可以用<em>分号</em>或者<em>逗号</em>连接，分号连接不显示运算的结果。</li>
+<li>在运算式子结束的时候可用空格+…之后回车在下一行继续书写</li>
+<li>%后面写注释</li>
+</ol>
+<h3 id="数据显示格式"><a href="#数据显示格式" class="headerlink" title="数据显示格式"></a>数据显示格式</h3><p>默认数据显示格式为<strong>short</strong></p>
+<ul>
+<li>整数———整数</li>
+<li>实数———小数点后4位</li>
+<li>有效数字超出范围————科学计数法</li>
+</ul>
+<p>可以利用format进行格式化</p>
+<ul>
+<li>格式为： format + 需格式化的类型 ； 变量</li>
+</ul>
+<h3 id="复数"><a href="#复数" class="headerlink" title="复数"></a>复数</h3><p>复数可以直接输入进行计算</p>
+<p>示例</p>
+<blockquote>
+<p>a = 1 + 2 * i;</p>
+</blockquote>
+<blockquote>
+<p>问题：-8开三次根出现一个复数，如何解决？</p>
+</blockquote>
+<h3 id="预定义变量"><a href="#预定义变量" class="headerlink" title="预定义变量"></a>预定义变量</h3><ol>
+<li>i和j，是虚数单位</li>
+<li>pi 为圆周率</li>
+<li>eps 为浮点识别精度</li>
+<li>realmin 为最小正实数，小于其为0</li>
+<li>realmax 为最大正实数，大于其为无穷</li>
+<li>Inf 为无穷大</li>
+<li>NaN 为没有意义的数</li>
+</ol>
+<p>可以对其重新赋值，同时clear后初始化</p>
+<h3 id="用户变量"><a href="#用户变量" class="headerlink" title="用户变量"></a>用户变量</h3><ul>
+<li>whos 查看当前workspace的所有变量</li>
+<li>clear 清除所有变量或者指定某一个变量</li>
+</ul>
+<p>ans为没有指定变量名的变量</p>
+<h3 id="数据MAT文件"><a href="#数据MAT文件" class="headerlink" title="数据MAT文件"></a>数据MAT文件</h3><ul>
+<li>使用 load + 文件名来读取相应的文件，mat文件为二进制文件</li>
+</ul>
+<h2 id="数组及其运算"><a href="#数组及其运算" class="headerlink" title="数组及其运算"></a>数组及其运算</h2><h3 id="数组的输入和分析"><a href="#数组的输入和分析" class="headerlink" title="数组的输入和分析"></a>数组的输入和分析</h3><ul>
+<li>matlab 中的数组是按列来计算的</li>
+</ul>
+<p>数组示例</p>
+<blockquote>
+<p>a = [1,2,3;4,5,6;7,8,9]</p>
+</blockquote>
+<p>等价于</p>
+<blockquote>
+<p>a = [1 2 3</p>
+</blockquote>
+<blockquote>
+<p>4 5 6</p>
+</blockquote>
+<blockquote>
+<p>7 8 9]</p>
+</blockquote>
+<p>可以使用等差数列构造一维数组</p>
+<blockquote>
+<p>xxx = 初值：增量：终值</p>
+</blockquote>
+<ul>
+<li>length（）用于查询一维数组的长度</li>
+<li>size（）用于查询多维数组的大小</li>
+<li>a（：）用于把数组中的数据按顺序，列出为列项量</li>
+<li>a（[x,y] [x, y]）提取出xy行，xy列的数组，返回一个新的数组</li>
+<li>a（2，：）提取a的整个第二行</li>
+<li>a [x;y]将两个数组拼接</li>
+<li>sum（a）一维数组直接求和，二维数组按列求和</li>
+</ul>
+<h3 id="数组运算"><a href="#数组运算" class="headerlink" title="数组运算"></a>数组运算</h3><ol>
+<li>数组的加减A+B/A-B</li>
+<li>数组乘A.*B</li>
+<li>数组乘方A.^B</li>
+<li>数组除法A./B OR A.\B</li>
+</ol>
+<h3 id="数学函数"><a href="#数学函数" class="headerlink" title="数学函数"></a>数学函数</h3><ul>
+<li>常规数学函数</li>
+</ul>
+<p>sin / cos / tan / cot / asin / acos / sqrt / exp / log / floor(向下取整) / ceil（向上取整） / abs（绝对值） / factorial（阶乘） /</p>
+<h3 id="关系和逻辑运算"><a href="#关系和逻辑运算" class="headerlink" title="关系和逻辑运算"></a>关系和逻辑运算</h3><p>真用1，假用0来表示，其余规则与c和java一致，非用~来表示</p>
+<h2 id="字符串，元胞和结构"><a href="#字符串，元胞和结构" class="headerlink" title="字符串，元胞和结构"></a>字符串，元胞和结构</h2><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><ul>
+<li>字符串直接用单引号包围</li>
+<li>size()用来求字符串长度</li>
+<li>eval()可以执行字符串中的计算式</li>
+<li>字符串可以用ascll码换算</li>
+</ul>
+<p>拼接字符串示例</p>
+<blockquote>
+<p>[a,’.’,b,’.’]</p>
+</blockquote>
+<p>字符串和数字之间可以用来转换</p>
+<ol>
+<li>num2str</li>
+<li>str2num</li>
+</ol>
+<h3 id="元胞和结构"><a href="#元胞和结构" class="headerlink" title="元胞和结构"></a>元胞和结构</h3><ul>
+<li>字符串可以通过char（）来转化为字符数组，会自动补齐</li>
+<li><strong>不同类型，尺寸的数组通过加大括号来表示为一个元胞，多个元胞形成数组</strong></li>
+</ul>
+<blockquote>
+<p>示例<br>ac1={‘first’;1:3}</p>
+</blockquote>
+<blockquote>
+<p>ac2={‘second’;[1 2;3 4]}</p>
+</blockquote>
+<blockquote>
+<p>ac=[ac1,ac2]</p>
+</blockquote>
+<blockquote>
+<p>ac = </p>
+</blockquote>
+<blockquote>
+<p>‘first’  ‘second’</p>
+</blockquote>
+<blockquote>
+<p>[1*3 double] [2*2 double]</p>
+</blockquote>
+<ul>
+<li>ac()查询元素</li>
+<li>ac[]查询元素具体内容</li>
+</ul>
+<p>结构通过域来定义，这里可以理解为结构体的概念，几个结构可以合成一个结构数组然后域名一致<br>示例省略，很重要</p>
+<ul>
+<li>元胞数组和结构数组之间的转换<ul>
+<li>struct2cell</li>
+<li>cell2struct</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://lanxiaoxi.github.io/lanxi.github.io/lanxi.github.io/2019/04/26/MD使用介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -924,7 +1428,7 @@
                 
                   <a href="/lanxi.github.io/archives/">
                 
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -943,7 +1447,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -962,7 +1470,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
